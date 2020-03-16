@@ -1,25 +1,61 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth import login, authenticate, logout
-from .admin import UserCreationForm, LoginForm
+from django.views.decorators.csrf import csrf_exempt
+from .admin import UserCreationForm, LoginForm, UserProfileForm
+from .models import MyUser, UserProfile
+from django.core.exceptions import ObjectDoesNotExist
+
+
 
 def home(request):
  return render(request, 'home.html')
 
 
+@csrf_exempt
+def validate_email(request):
+    email = request.POST.get('email')
+    data = {
+        'is_taken': MyUser.objects.filter(email__iexact=email).exists()
+    }
+    if data['is_taken']:
+        data['error_message'] = 'A user with this email already exists.'
+    return JsonResponse(data)
+
+
 def sign_up(request):
+    context = {
+        'form': UserCreationForm(),
+        'userProfileForm': UserProfileForm()
+    }
     if request.method == "POST":
         form = UserCreationForm(request.POST)
-        if form.is_valid():
+        userProfileForm = UserProfileForm(request.POST)
+        if form.is_valid() and userProfileForm.is_valid():
             form.save()
+            userProfileForm.save()
             email = form.cleaned_data.get("email")
-            password = form.cleaned_data.get("password1")
-            user = authenticate(email=email, password=password)
-            login(request, user)
-            # return HttpResponseRedirect('bayy:contact')
-    else:
-        form = UserCreationForm()
-    return render(request, "bayya/register.html", {"form": form})
+            refered_email = userProfileForm.changed_data.get('referers_email')
+            phone_number = userProfileForm.changed_data.get('phone_number')
+            bank_name = userProfileForm.changed_data.get('bank_name')
+            bit_add_or_bank_acct = userProfileForm.changed_data.get('bitcoin_add_or_bank_acct')
+
+            try:
+                user = MyUser.objects.get(email=email)
+            except ObjectDoesNotExist:
+                pass
+            else:
+                UserProfile.objects.create(user=user)
+                password = form.cleaned_data.get("password1")
+                user = authenticate(email=email, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect(reverse('bayya:index'))
+        else:
+            context['form'] = form
+            context['userProfileForm'] = userProfileForm
+            context["error"] = "Invalid Login Credentials"
+    return render(request, "bayya/register.html", context)
 
 def login_page(request):
     if request.method == "POST":
@@ -32,7 +68,7 @@ def login_page(request):
                 if user.is_active:
                     login(request, user)
                     print('is_active worked')
-                    redirect(reverse('bayya:index'))
+                    return redirect(reverse('bayya:index'))
                 else:
 
                     Print('Account not active')

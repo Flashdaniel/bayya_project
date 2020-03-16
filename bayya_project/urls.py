@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from bayya.views import index
+from bayya.views import index, validate_email
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('bayya/', include('bayya.urls')),
     path('', index, name='index'),
+    path('ajax/validate_email', validate_email, name='validate_email'),
 ]

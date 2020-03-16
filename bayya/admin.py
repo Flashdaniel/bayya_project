@@ -92,25 +92,29 @@ class UserProfileForm(forms.ModelForm):
     
     class Meta:
         model = UserProfile
-        fields = ('bank_name', 'bank_acct_no', 'bitcoin_address')
+        fields = ( 'phone_number', 'referers_email',  'bank_name', 'bitcoin_add_or_bank_acct')
         widgets = {'bank_name':forms.TextInput(attrs={
                         'class':'form-control',
                         'placeholder':'BANK NAME'
                     }),
-                    'bank_acct_no':forms.NumberInput(attrs={
+                    'phone_number':forms.NumberInput(attrs={
                         'class':'form-control',
-                        'placeholder':'BANK ACCOUNT NO'
+                        'placeholder':'PHONE NUMBER'
                     }),
-                    'bitcoin_address':forms.TextInput(attrs={
+                    'bitcoin_add_or_bank_acct':forms.TextInput(attrs={
                         'class':'form-control',
-                        'placeholder':'BITCOIN ADDRESS'
-                    })
+                        'placeholder':'BITCOIN ADD OR BANK ACCT NO'
+                    }),
+                    'referers_email':forms.EmailInput(attrs={
+                        'class':'form-control',
+                        'placeholder':'REFERER EMAIL'
+                        }),
                 }
 
 class UserProfileAdmin(admin.ModelAdmin):
 
-    list_display = ('my_user', 'bank_name', 'bank_acct_no', 'bitcoin_address')
-    list_filter = ('my_user', 'bank_name', 'bank_acct_no')
+    list_display = ('my_user', 'phone_number', 'referers_email',  'bank_name', 'bitcoin_add_or_bank_acct')
+    list_filter = ('my_user', 'phone_number', 'referers_email',  'bank_name', 'bitcoin_add_or_bank_acct')
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances

@@ -52,7 +52,7 @@ class MyUser(AbstractBaseUser):
     )
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    country = CountryField()
+    country = CountryField(blank_label='(SELECT YOUR COUNTRY)')
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -90,7 +90,8 @@ class MyUser(AbstractBaseUser):
 
 class UserProfile(models.Model):
     my_user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
-    bank_name = models.CharField(max_length=150)
-    bank_acct_no = models.IntegerField()
-    bitcoin_address = models.CharField(max_length=255)
+    referers_email = models.EmailField(max_length=150, verbose_name='referred email')
+    phone_number = models.BigIntegerField()
+    bank_name = models.CharField(max_length=150, blank=True, null=True)
+    bitcoin_add_or_bank_acct = models.CharField(max_length=255, verbose_name='bitcoin address or bank account no')
 

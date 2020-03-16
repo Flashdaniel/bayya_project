@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'bayya_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'bayyadb',
+        'NAME':'bayyadb2',
         'USER':'postgres',
         'PASSWORD':'flash3013',
         'HOST':'localhost',
