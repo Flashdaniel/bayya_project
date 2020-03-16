@@ -95,9 +95,9 @@ class UserProfileForm(forms.ModelForm):
         fields = ( 'phone_number', 'referers_email',  'bank_name', 'bitcoin_add_or_bank_acct')
         widgets = {'bank_name':forms.TextInput(attrs={
                         'class':'form-control',
-                        'placeholder':'BANK NAME'
+                        'placeholder':'BANK NAME(OPTIONAL)'
                     }),
-                    'phone_number':forms.NumberInput(attrs={
+                    'phone_number':forms.TextInput(attrs={
                         'class':'form-control',
                         'placeholder':'PHONE NUMBER'
                     }),

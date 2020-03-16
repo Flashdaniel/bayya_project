@@ -33,19 +33,20 @@ def sign_up(request):
         userProfileForm = UserProfileForm(request.POST)
         if form.is_valid() and userProfileForm.is_valid():
             form.save()
-            userProfileForm.save()
+            # userProfileForm.save()
             email = form.cleaned_data.get("email")
-            refered_email = userProfileForm.changed_data.get('referers_email')
-            phone_number = userProfileForm.changed_data.get('phone_number')
-            bank_name = userProfileForm.changed_data.get('bank_name')
-            bit_add_or_bank_acct = userProfileForm.changed_data.get('bitcoin_add_or_bank_acct')
+            refered_email = userProfileForm.cleaned_data.get('referers_email')
+            phone_number = userProfileForm.cleaned_data.get('phone_number')
+            bank_name = userProfileForm.cleaned_data.get('bank_name')
+            bit_add_or_bank_acct = userProfileForm.cleaned_data.get('bitcoin_add_or_bank_acct')
 
             try:
                 user = MyUser.objects.get(email=email)
             except ObjectDoesNotExist:
                 pass
             else:
-                UserProfile.objects.create(user=user)
+                UserProfile.objects.create(my_user=user, referers_email=refered_email, 
+                phone_number=phone_number, bank_name=bank_name, bitcoin_add_or_bank_acct=bit_add_or_bank_acct)
                 password = form.cleaned_data.get("password1")
                 user = authenticate(email=email, password=password)
                 if user is not None:
